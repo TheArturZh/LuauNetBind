@@ -3,7 +3,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Luau;
-using Luau.NET.Test;
 
 var script = @"
 --!strict
@@ -32,18 +31,18 @@ unsafe
     Luau.lua_CompileOptions compOpts = default;
     compOpts.debugLevel = 2;
     nuint outsize = 0;
-    
+
     Console.WriteLine("creating a state");
     var L = Luau.Luau.luaL_newstate();
     Luau.Luau.luaL_openlibs(L);
-    
+
     //route print to console
     // luaL_setfuncs(L, printlib, 0);
     var print_debug_name = System.Text.Encoding.UTF8.GetBytes("print");
     fixed (byte* ptr = print_debug_name)
     {
         Luau.Luau.lua_pushvalue(L,Luau.Luau.LUA_GLOBALSINDEX);
-        
+
         //create bind in functions via array (for multiple)
         // var funcs = new Utils.NativeArray<Luau.luaL_Reg>(2);
         // funcs[0].func = &Print;
@@ -51,16 +50,13 @@ unsafe
         // funcs[1].func = null;
         // funcs[1].name = null;
         // Luau.Luau.luaL_register(L,null,funcs.Ptr);
-        
+
         // create and bind in a single function
-        Luau.Luau.lua_pushcclosurek(L, &Print, (sbyte*)ptr, 0, null);
-        //lua_settop(L, -(n)-1)
-        Luau.Luau.lua_settop(L, -1-1);
-        //Luau.Luau.macros_lua_pushcfunction(L,&Print,(sbyte*)ptr);
-        
-        //Luau.Luau.macros_lua_pop(L,1);
+        Luau.Macros.lua_pushcfunction(L, &Print, (sbyte*) ptr);
+
+        Luau.Macros.lua_pop(L, 1);
     }
-    
+
     // var state = Luau.Luau.lua_newstate;
     Console.WriteLine("state created");
     var chunkname = System.Text.Encoding.UTF8.GetBytes("test");
@@ -69,15 +65,15 @@ unsafe
         Console.WriteLine("compiling");
         var compiledBytecode = Luau.Luau.luau_compile(
             (sbyte*)ptr,
-            (nuint)(scriptBytes.Length * sizeof(byte)), 
+            (nuint)(scriptBytes.Length * sizeof(byte)),
             &compOpts,
             &outsize
             );
         Console.WriteLine($"loading bytecode with size {outsize}");
         int result = Luau.Luau.luau_load(
-            L, 
-            (sbyte*)chunk, 
-            compiledBytecode, 
+            L,
+            (sbyte*)chunk,
+            compiledBytecode,
             outsize,
             0);
         Console.WriteLine(result);
@@ -91,7 +87,7 @@ unsafe
         switch ((Luau.lua_Status)status)
         {
             case lua_Status.LUA_ERRRUN:
-                var s = Luau.Luau.lua_tolstring(L, -1, null);
+                var s = Luau.Macros.lua_tostring(L, -1);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
                 var trace = Luau.Luau.lua_debugtrace(L);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)trace));
@@ -112,7 +108,7 @@ static unsafe int Print(Luau.lua_State* L)
     for (int i = 1; i <= nargs; i++)
     {
         if (Luau.Luau.lua_isstring(L, i) == 1) {
-            var s = Luau.Luau.lua_tolstring(L, i, null);
+            var s = Luau.Macros.lua_tostring(L, i);
             Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
         }
         else
@@ -125,7 +121,7 @@ static unsafe int Print(Luau.lua_State* L)
                     Console.WriteLine(b == 0 ? "false" : "true");
                     break;
                 case lua_Type.LUA_TNUMBER:
-                    var n = Luau.Luau.lua_tonumberx(L, i, null);
+                    var n = Luau.Macros.lua_tonumber(L, i);
                     Console.WriteLine(n);
                     break;
             }
