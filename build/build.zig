@@ -20,16 +20,16 @@ pub fn build(b: *std.Build) void {
     });
     lib.linkLibC();
     lib.linkLibCpp();
-    
+
     // lib.addCSourceFiles(&[_][]const u8{
     //     "defines.cpp"
     // },&[_][]const u8{});
     var lua_api_flag = if (lib.target.isWindows()) "-DLUA_API=extern\"C\" __declspec(dllexport) " else "-DLUA_API=extern\"C\"";
-    var luacode_api_flag = if (lib.target.isWindows()) "-DLUA_API=extern\"C\" __declspec(dllexport) " else "-DLUACODE_API=extern\"C\"";
+    var luacode_api_flag = if (lib.target.isWindows()) "-DLUACODE_API=extern\"C\" __declspec(dllexport) " else "-DLUACODE_API=extern\"C\"";
     lib.addCSourceFiles(&[_][]const u8{
         // "defines.cpp"
         "./include/additional.cpp",
-  
+
         "../luau/Ast/src/Ast.cpp",
         "../luau/Ast/src/Confusables.cpp",
         "../luau/Ast/src/Lexer.cpp",
@@ -156,8 +156,6 @@ pub fn build(b: *std.Build) void {
         "-DLUA_USE_LONGJMP=1",
         lua_api_flag,
         luacode_api_flag
-        // "-DLUA_API=extern\"C\"",
-        // "-DLUACODE_API=extern\"C\"",
     });
 
     // lib.addIncludePath(.{ .path = "./include" });

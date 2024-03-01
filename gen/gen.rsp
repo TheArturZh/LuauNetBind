@@ -16,6 +16,7 @@ Luau
 --libraryPath
 lib/luau
 --traverse
+../build/include/platformdef.h
 ../luau/Compiler/include/luacode.h
 ../luau/VM/include/lua.h
 ../luau/VM/include/lualib.h

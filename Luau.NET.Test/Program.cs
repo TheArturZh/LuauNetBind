@@ -53,9 +53,12 @@ unsafe
         // Luau.Luau.luaL_register(L,null,funcs.Ptr);
         
         // create and bind in a single function
-        Luau.Luau.macros_lua_pushcfunction(L,&Print,(sbyte*)ptr);
+        Luau.Luau.lua_pushcclosurek(L, &Print, (sbyte*)ptr, 0, null);
+        //lua_settop(L, -(n)-1)
+        Luau.Luau.lua_settop(L, -1-1);
+        //Luau.Luau.macros_lua_pushcfunction(L,&Print,(sbyte*)ptr);
         
-        Luau.Luau.macros_lua_pop(L,1);
+        //Luau.Luau.macros_lua_pop(L,1);
     }
     
     // var state = Luau.Luau.lua_newstate;
@@ -88,7 +91,7 @@ unsafe
         switch ((Luau.lua_Status)status)
         {
             case lua_Status.LUA_ERRRUN:
-                var s = Luau.Luau.macros_lua_tostring(L, -1);
+                var s = Luau.Luau.lua_tolstring(L, -1, null);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
                 var trace = Luau.Luau.lua_debugtrace(L);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)trace));
@@ -109,7 +112,7 @@ static unsafe int Print(Luau.lua_State* L)
     for (int i = 1; i <= nargs; i++)
     {
         if (Luau.Luau.lua_isstring(L, i) == 1) {
-            var s = Luau.Luau.macros_lua_tostring(L, i);
+            var s = Luau.Luau.lua_tolstring(L, i, null);
             Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
         }
         else
@@ -122,7 +125,7 @@ static unsafe int Print(Luau.lua_State* L)
                     Console.WriteLine(b == 0 ? "false" : "true");
                     break;
                 case lua_Type.LUA_TNUMBER:
-                    var n = Luau.Luau.macros_lua_tonumber(L, i);
+                    var n = Luau.Luau.lua_tonumberx(L, i, null);
                     Console.WriteLine(n);
                     break;
             }
