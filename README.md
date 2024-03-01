@@ -1,15 +1,26 @@
-# Luau.NET
+# LuauNetBind
 
-very basic luau lib + bindings generator
-demonstrates:
-* ability to load in and compile a script
-* function binding between luau/c#
-* no marshalled bindings (fast!)
+**Fork of https://github.com/afterschoolstudio/Luau.NET**
 
-i don't know anything about luau (or really even lua) but will happily work with other people to make this better
+These are low-level library bindings without marshalling.
+I'm planning to wrap it into a library with an idiomatic API later.
 
-the script will "fail" due to errors in the script, but that's the point.
-expected output:
+## Building
+You'll need .NET 8 SDK, Zig and ClangSharpPInvokeGenerator (dotnet tool)
+
+1. Run `zig build` in build/ to build dynamic Luau library.
+2. Run `ClangSharpPInvokeGenerator '@gen.rsp'` in gen/ to generate bindings.  
+   Latest version (17.0.1) of ClangSharpPInvokeGenerator doesn't generate correct C#, so you'll need to manually delete `}` at the end of the Luau.NET.Test/bindings/Luau.cs
+3. To test, run `dotnet run` in Luau.Net.Test/
+
+## Test program
+Demonstrates:
+* Ability to load in and compile a script
+* Function binding between Luau/C##
+* No marshalled bindings (Fast!)
+
+The test script will "fail" due to errors in the script, but that's the point.  
+Expected output:
 ```
 creating a state
 state created
@@ -24,11 +35,3 @@ LUA_ERRRUN
 
 exited
 ```
-
-zig build in build/ to build
-use ClangSharpPInvokeGenerator in gen/ for gen.rsp to generate bindings
-
-only tested on osx and dylib building and it all works
-i suspect the declspec define thing for windows may break when trying to build
-
-to test, `dotnet run` in Luau.NET.Test
