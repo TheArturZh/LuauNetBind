@@ -17,8 +17,7 @@ You'll need .NET 8 SDK, Zig and ClangSharpPInvokeGenerator (dotnet tool)
 ## Test program
 Demonstrates:
 * Ability to load in and compile a script
-* Function binding between Luau/C##
-* No marshalled bindings (Fast!)
+* Function binding between Luau/C#
 
 The test script will "fail" due to errors in the script, but that's the point.  
 Expected output:
