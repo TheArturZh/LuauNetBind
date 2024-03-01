@@ -10,7 +10,7 @@ You'll need .NET 8 SDK, Zig and ClangSharpPInvokeGenerator (dotnet tool)
 
 1. Run `zig build` in build/ to build dynamic Luau library.
 2. Run `ClangSharpPInvokeGenerator '@gen.rsp'` in gen/ to generate bindings.  
-   Latest version (17.0.1) of ClangSharpPInvokeGenerator doesn't generate correct C#, so you'll need to manually delete `}` at the end of the Luau.NET.Test/bindings/Luau.cs
+   Latest version (17.0.1) of ClangSharpPInvokeGenerator doesn't generate correct C#, so you'll need to manually delete `}` at the end of Luau.NET.Test/bindings/Luau.cs file.
 3. To test, run `dotnet run` in Luau.Net.Test/
 
 ## Test program
