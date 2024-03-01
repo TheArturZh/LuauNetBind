@@ -164,6 +164,16 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{ .path = "../luau/Common/include" });
 
     // lib.addIncludePath(.{ .path = "/Library/Developer/CommandLineTools/usr/include/c++/v1" });
+
+    // Zig produces files with naming "lib%name%.so", so we need another step that renames it into %name%.so
+    // It duplicates the lib, so I still need a better solution than that (a python build script probably)
+    if (lib.target.isLinux())
+    {
+        const install = b.addInstallFileWithDir(lib.getOutputSource(), .lib, "luau.so");
+        install.step.dependOn(&lib.step);
+        b.getInstallStep().dependOn(&install.step);
+    }
+
     b.lib_dir = "../Luau.NET.Test/lib";
     b.installArtifact(lib);
 }

@@ -5,7 +5,6 @@ namespace Luau;
 /// <summary>
 /// This exists because function-like macro definition records are not supported by ClangSharpPInvokeGenerator yet.
 /// </summary>
-///
 public static class Macros
 {
     // TODO: Reimplement lua_pushliterals as a proper C++ function
