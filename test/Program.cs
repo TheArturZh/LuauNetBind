@@ -33,15 +33,15 @@ unsafe
     nuint outsize = 0;
 
     Console.WriteLine("creating a state");
-    var L = Luau.Luau.luaL_newstate();
-    Luau.Luau.luaL_openlibs(L);
+    var L = Luau.Native.luaL_newstate();
+    Luau.Native.luaL_openlibs(L);
 
     //route print to console
     // luaL_setfuncs(L, printlib, 0);
     var print_debug_name = System.Text.Encoding.UTF8.GetBytes("print");
     fixed (byte* ptr = print_debug_name)
     {
-        Luau.Luau.lua_pushvalue(L,Luau.Luau.LUA_GLOBALSINDEX);
+        Luau.Native.lua_pushvalue(L,Luau.Native.LUA_GLOBALSINDEX);
 
         //create bind in functions via array (for multiple)
         // var funcs = new Utils.NativeArray<Luau.luaL_Reg>(2);
@@ -63,14 +63,14 @@ unsafe
     fixed (byte* ptr = scriptBytes, chunk = chunkname)
     {
         Console.WriteLine("compiling");
-        var compiledBytecode = Luau.Luau.luau_compile(
+        var compiledBytecode = Luau.Native.luau_compile(
             (sbyte*)ptr,
             (nuint)(scriptBytes.Length * sizeof(byte)),
             &compOpts,
             &outsize
             );
         Console.WriteLine($"loading bytecode with size {outsize}");
-        int result = Luau.Luau.luau_load(
+        int result = Luau.Native.luau_load(
             L,
             (sbyte*)chunk,
             compiledBytecode,
@@ -83,15 +83,15 @@ unsafe
     bool run = true;
     while (run)
     {
-        status = Luau.Luau.lua_resume(L, null, 0);
+        status = Luau.Native.lua_resume(L, null, 0);
         switch ((Luau.lua_Status)status)
         {
             case lua_Status.LUA_ERRRUN:
                 var s = Luau.Macros.lua_tostring(L, -1);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
-                var trace = Luau.Luau.lua_debugtrace(L);
+                var trace = Luau.Native.lua_debugtrace(L);
                 Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)trace));
-                Luau.Luau.lua_close(L);
+                Luau.Native.lua_close(L);
                 run = false;
                 break;
         }
@@ -103,21 +103,21 @@ Console.WriteLine("exited");
 [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 static unsafe int Print(Luau.lua_State* L)
 {
-    int nargs = Luau.Luau.lua_gettop(L);
+    int nargs = Luau.Native.lua_gettop(L);
     Console.WriteLine($"my print in managed with nargs {nargs}");
     for (int i = 1; i <= nargs; i++)
     {
-        if (Luau.Luau.lua_isstring(L, i) == 1) {
+        if (Luau.Native.lua_isstring(L, i) == 1) {
             var s = Luau.Macros.lua_tostring(L, i);
             Console.WriteLine(Marshal.PtrToStringAnsi((IntPtr)s));
         }
         else
         {
-            var t = Luau.Luau.lua_type(L, i);
+            var t = Luau.Native.lua_type(L, i);
             switch ((Luau.lua_Type)t)
             {
                 case lua_Type.LUA_TBOOLEAN:
-                    var b = Luau.Luau.lua_toboolean(L, i);
+                    var b = Luau.Native.lua_toboolean(L, i);
                     Console.WriteLine(b == 0 ? "false" : "true");
                     break;
                 case lua_Type.LUA_TNUMBER:

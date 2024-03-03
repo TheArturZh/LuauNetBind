@@ -174,6 +174,6 @@ pub fn build(b: *std.Build) void {
         b.getInstallStep().dependOn(&install.step);
     }
 
-    b.lib_dir = "../Luau.NET.Test/lib";
+    b.lib_dir = "../src/lib";
     b.installArtifact(lib);
 }

@@ -1,12 +1,12 @@
-
 build/zig-cache/
-
 build/out/
 
-Luau.NET.Test/bin/
+bin/
 
-Luau.NET.Test/lib/
+src/lib/
+src/obj/
+src/bin/
 
-Luau.NET.Test/obj/
+test/obj/
 
 .DS_Store

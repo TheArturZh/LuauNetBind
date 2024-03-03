@@ -185,7 +185,7 @@ public unsafe partial struct lua_CompileOptions
         }
     }
 
-    public static unsafe partial class Luau
+    public static unsafe partial class Native
     {
         [DllImport("lib/luau", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("char *")]

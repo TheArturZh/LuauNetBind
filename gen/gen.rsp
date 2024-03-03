@@ -23,6 +23,6 @@ lib/luau
 --file
 gen.h
 --methodClassName
-Luau
+Native
 --output
-../Luau.NET.Test/bindings/Luau.cs
+../src/bindings/Native.cs

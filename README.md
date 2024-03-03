@@ -10,9 +10,13 @@ You'll need .NET 8 SDK, Zig, ClangSharpPInvokeGenerator (dotnet tool) and Clang 
 
 1. Run `git submodule update --init`
 2. Run `zig build` in build/ to build dynamic Luau library.
-3. Run `ClangSharpPInvokeGenerator '@gen.rsp'` in gen/ to generate bindings.  
-   Latest version (17.0.1) of ClangSharpPInvokeGenerator doesn't generate correct C#, so you'll need to manually delete `}` at the end of Luau.NET.Test/bindings/Luau.cs file.
-4. To test, run `dotnet run` in Luau.Net.Test/
+3. To build C# bindings, run `dotnet build` in src
+4. To test, run `dotnet run` in test/
+
+## Generating bindings by yourself
+To generate bindings run `ClangSharpPInvokeGenerator '@gen.rsp'` in `gen/`  
+Note that you will likely have to manually edit newly generated native bindings in bindings/Native.cs  
+Latest version (17.0.1) of ClangSharpPInvokeGenerator doesn't generate correct C#, so you'll need to manually delete `}` at the end of src/bindings/Native.cs file.
 
 ## Test program
 Demonstrates:
